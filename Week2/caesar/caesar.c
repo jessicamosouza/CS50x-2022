@@ -4,19 +4,22 @@
 #include <ctype.h>
 #include <string.h>
 
-int get_key(int argc, string argv);
-string get_plaintext(void);
+bool check_key(int argc, string argv);
 string get_cipher(string plaintext, int key);
+char char_cypher(char a, int key, char letter);
 
 int main(int argc, string argv[])
 {
-    int key = get_key(argc, argv[1]);
-    if (key == false)
+    bool key_check = check_key(argc, argv[1]);
+    if (key_check == false)
     {
         return 1;
     }
 
-    string plaintext = get_plaintext();
+    // Convert argv[1] from a `string` to an `int`
+    int key = atoi(argv[1]);
+
+    string plaintext = get_string("plaintext:  ");
 
     string ciphertext = get_cipher(plaintext, key);
 
@@ -24,7 +27,7 @@ int main(int argc, string argv[])
     printf("%s\n", ciphertext);
 }
 
-int get_key(int count, string k)
+bool check_key(int count, string k)
 {
     // Make sure program was run with just one command-line argument
     if (count != 2)
@@ -32,29 +35,17 @@ int get_key(int count, string k)
         printf("Usage: ./caesar key\n");
         return false;
     }
-    else
+
+    // Make sure every character in argv[1] is a digit
+    for (int i = 0; i < strlen(k); i++)
     {
-        // Make sure every character in argv[1] is a digit
-        for (int i = 0; i < strlen(k); i++)
+        if (isalpha(k[i]))
         {
-            if (isalpha(k[i]))
-            {
-                printf("Usage: ./caesar key\n");
-                return false;
-            }
+            printf("Usage: ./caesar key\n");
+            return false;
         }
-
-        // Convert argv[1] from a `string` to an `int`
-        return atoi(k);
     }
-}
-
-string get_plaintext(void)
-{
-    // Prompt user for plaintext
-    string plaintext = get_string("plaintext:  ");
-
-    return plaintext;
+    return true;
 }
 
 string get_cipher(string plaintext, int key)
@@ -64,20 +55,28 @@ string get_cipher(string plaintext, int key)
     for (int i = 0; i < strlen(plaintext); i++)
     {
         // Rotate the character if it's a letter
-        if (isalpha(plaintext[i]))
+        if (!isalpha(plaintext[i]))
         {
-            if (isupper(plaintext[i]))
-            {
-                plaintext[i] = ((plaintext[i] - 'A') + key) % 26;
-                plaintext[i] = plaintext[i] + 'A';
-            }
-            else
-            {
-                plaintext[i] = ((plaintext[i] - 'a') + key) % 26;
-                plaintext[i] = plaintext[i] + 'a';
-            }
+            continue;
+        }
+
+        if (isupper(plaintext[i]))
+        {
+            plaintext[i] = char_cypher('A', key, plaintext[i]);
+        }
+        else
+        {
+            plaintext[i] = char_cypher('a', key, plaintext[i]);
         }
     }
 
     return plaintext;
+}
+
+char char_cypher(char a, int key, char letter)
+{
+    letter = ((letter - a) + key) % 26;
+    letter = letter + a;
+
+    return letter;
 }
