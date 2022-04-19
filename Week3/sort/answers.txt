@@ -1,0 +1,11 @@
+sort1 uses: Bubble Sort
+
+How do you know?: Because Bubble sort takes the least amount of time when the numbers are already sorted and a lot of time when the elements are in random order.
+
+sort2 uses: Merge Sort
+
+How do you know?: Because Merge Sort is slower compared to other sort algorithms for the smallest tasks and goes through the whole sorting process even if the array is sorted.
+
+sort3 uses: Selection Sort
+
+How do you know?: Because Selection Sort never takes more than O(n) swaps to do the process.
